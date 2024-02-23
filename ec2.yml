@@ -55,5 +55,5 @@ Outputs:
     Description: DNS público da nova instância EC2
     Value: !GetAtt EC2Instance.PublicDnsName
   PublicIp:
-    Descriptoin: IP público da nova instância EC2
+    Description: IP público da nova instância EC2
     Value: !GetAtt EC2Instance.PublicIp
