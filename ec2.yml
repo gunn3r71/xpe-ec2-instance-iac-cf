@@ -1,0 +1,59 @@
+AWSTemplateFormatversion: '2010-09-09'
+Parameters:
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+  InstanceType:
+    Default: t2.nano
+    Type: String
+    AllowedValues: t2.nano, t2.micro, t2.small
+  SshLocation:
+    Type: String
+    MinLength: 9
+    MaxLength: 10
+    Default: 0.0.0.0/0
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+Resources:
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref instanceType
+      SecurityGroups:
+        - !Ref InstanceSecurityGroup
+      KeyName: !Ref KeyName
+      ImageId: !Ref LatestAmiId
+      Tags:
+        - Key: Name
+          Value: xpe-ec2-instance
+        - Key: Course
+          Value: XPe AWS
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Habilita acesso SSH ao servidor ec2
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref SshLocation
+  IPAddress:
+    Type: AWS::EC2::EIP
+  IPAssoc:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      InstanceId: !Ref EC2Instance
+      EIP: !Ref IPAddress
+Outputs:
+  InstanceId:
+    Description: Id da instância EC2 criada
+    Value: !Ref EC2Instance
+  AZ:
+    Description: Zona de disponibilidade onde EC2 foi criada
+    Value: !GetAtt EC2Instance.AvailabilityZone
+  PublicDns:
+    Description: DNS público da nova instância EC2
+    Value: !GetAtt EC2Instance.PublicDnsName
+  PublicIp:
+    Descriptoin: IP público da nova instância EC2
+    Value: !GetAtt EC2Instance.PublicIp
