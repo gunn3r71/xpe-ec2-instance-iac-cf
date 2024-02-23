@@ -14,12 +14,15 @@ Parameters:
   LatestAmiId:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+  VpcId:
+    Type: String
+
 Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: !Ref InstanceType
-      SecurityGroups:
+      SecurityGroupIds:
         - !Ref InstanceSecurityGroup
       KeyName: !Ref KeyName
       ImageId: !Ref LatestAmiId
@@ -37,6 +40,7 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: !Ref SshLocation
+      VpcId: !Ref VpcId
   IPAddress:
     Type: AWS::EC2::EIP
   IPAssoc:
