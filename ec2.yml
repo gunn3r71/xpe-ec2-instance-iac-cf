@@ -18,7 +18,7 @@ Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      InstanceType: !Ref instanceType
+      InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref InstanceSecurityGroup
       KeyName: !Ref KeyName
